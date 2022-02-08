@@ -20,12 +20,12 @@ final class Version20220202124455 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('UPDATE "user" SET is_Deleted=\'0\' WHERE is_Deleted IS NULL');
+        $this->addSql('UPDATE "user" SET is_deleted=\'0\' WHERE is_deleted IS NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('UPDATE "user" SET is_Deleted= NULL WHERE is_Deleted IS NULL');
+        $this->addSql('UPDATE "user" SET is_deleted= NULL WHERE is_deleted IS NULL');
     }
 }
