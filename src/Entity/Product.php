@@ -72,6 +72,21 @@ class Product
      */
     private $slug;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="products")
+     */
+    private $category;
+
+    /**
+     * @ORM\OneToMany(targetEntity=CartProduct::class, mappedBy="product", orphanRemoval=true)
+     */
+    private $cartProducts;
+
+    /**
+     * @ORM\OneToMany(targetEntity=OrderProduct::class, mappedBy="product")
+     */
+    private $orderProducts;
+
     public function __construct()
     {
         $this->uuid = Uuid::v4();
@@ -79,6 +94,8 @@ class Product
         $this->isPublished = false;
         $this->isDeleted = false;
         $this->productImages = new ArrayCollection();
+        $this->cartProducts = new ArrayCollection();
+        $this->orderProducts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -213,6 +230,78 @@ class Product
     public function setSlug(?string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CartProduct[]
+     */
+    public function getCartProducts(): Collection
+    {
+        return $this->cartProducts;
+    }
+
+    public function addCartProduct(CartProduct $cartProduct): self
+    {
+        if (!$this->cartProducts->contains($cartProduct)) {
+            $this->cartProducts[] = $cartProduct;
+            $cartProduct->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCartProduct(CartProduct $cartProduct): self
+    {
+        if ($this->cartProducts->removeElement($cartProduct)) {
+            // set the owning side to null (unless already changed)
+            if ($cartProduct->getProduct() === $this) {
+                $cartProduct->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|OrderProduct[]
+     */
+    public function getOrderProducts(): Collection
+    {
+        return $this->orderProducts;
+    }
+
+    public function addOrderProduct(OrderProduct $orderProduct): self
+    {
+        if (!$this->orderProducts->contains($orderProduct)) {
+            $this->orderProducts[] = $orderProduct;
+            $orderProduct->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrderProduct(OrderProduct $orderProduct): self
+    {
+        if ($this->orderProducts->removeElement($orderProduct)) {
+            // set the owning side to null (unless already changed)
+            if ($orderProduct->getProduct() === $this) {
+                $orderProduct->setProduct(null);
+            }
+        }
 
         return $this;
     }
